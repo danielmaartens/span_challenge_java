@@ -29,4 +29,24 @@ public class Main {
             }
         }
     }
+
+    public static void delayedPrint(String text, Integer delay) {
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                System.out.println(text);
+            }
+        },  delay);
+    }
+
+    public static void delayedPrint(String text) {
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                System.out.println(text);
+            }
+        },  3000);
+    }
 }
