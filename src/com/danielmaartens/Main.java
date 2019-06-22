@@ -26,14 +26,16 @@ public class Main {
         delayedPrint("Please provide the full path of the file where your results are stored:\n");
 
         String file = scanner.next();
-
-        HashMap<String, Integer> finalTeamPoints = new HashMap<>();
+        
+        List<HashMap<String, Integer>> teamMatchPoints = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
-            List<List<String>> results = new ArrayList<>();
-
+            
             while ((line = br.readLine()) != null) {
+                
+                List<List<String>> results = new ArrayList<>();
+                
                 String[] matchResults = line.split(",");
 
                 for (String result:
@@ -41,10 +43,39 @@ public class Main {
                     String[] teamResults = result.split(" ");
                     results.add(Arrays.asList(teamResults));
                 }
-
-                allResults.add(results);
+                
+                teamMatchPoints.add(calculateMatchPoints(results));
+                
             }
+
+            HashMap<String, Integer> finalTeamMatchPoints = reduceTeamMatchPoints(teamMatchPoints);
+            
         }
+    }
+
+    public static HashMap<String, Integer> reduceTeamMatchPoints (List<HashMap<String, Integer>> allMatchesTeamPoints) {
+        HashMap<String, Integer> finalTeamPoints = new HashMap<>();
+
+        for (HashMap<String, Integer> matchTeamPoints :
+                allMatchesTeamPoints) {
+
+            for (Map.Entry<String, Integer> entry : matchTeamPoints.entrySet()) {
+                String name = entry.getKey();
+                Integer points = entry.getValue();
+
+
+                if (!finalTeamPoints.containsKey(name)) {
+                    finalTeamPoints.put(name, points);
+                } else {
+                    Integer nextPointsTotal = finalTeamPoints.get(name) + points;
+
+                    finalTeamPoints.put(name, nextPointsTotal);
+                }
+            }
+
+        }
+
+        return finalTeamPoints;
     }
 
     public static void delayedPrint(String text, Integer delay) {
