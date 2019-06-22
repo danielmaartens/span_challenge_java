@@ -3,6 +3,8 @@ package com.danielmaartens;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Main {
 
@@ -12,9 +14,9 @@ public class Main {
 
         Scanner scanner = new Scanner(System.in);
 
-        System.out.print("Hello there ! You will be asked to input the full path of your file containing: \n");
+        System.out.println("\nHello there !\n");
 
-        Integer initialDelay = 3000;
+        Integer initialDelay = 1000;
         Integer delay = initialDelay;
 
         delayedPrint("This program will calculate the ranking table for a soccer league.\n", delay);
@@ -23,45 +25,73 @@ public class Main {
         delayedPrint("The data for the results of the games should be stored in a text file.\n", delay);
         delay += initialDelay;
 
-        delayedPrint("Please provide the full path of the file where your results are stored:\n");
+        delayedPrint("Please provide the full path of the file where your results are stored:\n", delay);
 
         String file = scanner.next();
         
-        List<HashMap<String, Integer>> teamMatchPoints = new ArrayList<>();
+        List<TeamMatchPoints> teamMatchPoints = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
+            Pattern p = Pattern.compile("^([a-zA-Z\\s]+)([0-9]+$)");
             
             while ((line = br.readLine()) != null) {
                 
-                List<List<String>> results = new ArrayList<>();
+                List<TeamScore> scores = new ArrayList<>();
                 
-                String[] matchResults = line.split(",");
+                String[] matchResults = line.split(", ");
 
-                for (String result:
-                     matchResults) {
-                    String[] teamResults = result.split(" ");
-                    results.add(Arrays.asList(teamResults));
+                for (String result: matchResults) {
+
+                    // Use regex pattern to match team names with spaces
+                    Matcher m = p.matcher(result);
+
+                    if (m.find()) {
+                        TeamScore score = new TeamScore();
+
+                        String team = m.group(1);
+
+                        // Remove the last space from the team name
+                        score.setTeam(team.substring(0, team.length()-1));
+                        score.setScore(Integer.valueOf(m.group(2)));
+
+                        scores.add(score);
+                    }
+
                 }
                 
-                teamMatchPoints.add(calculateMatchPoints(results));
+                teamMatchPoints.addAll(calculateMatchPoints(scores));
                 
             }
 
-            HashMap<String, Integer> finalTeamMatchPoints = reduceTeamMatchPoints(teamMatchPoints);
+            List<TeamMatchPoints> finalTeamMatchPoints = reduceTeamMatchPoints(teamMatchPoints);
+
+            // Sort team match points by points and then by team name (if points are the same)
+            Comparator<TeamMatchPoints> comparator = Comparator.comparingInt(TeamMatchPoints::getPoints).reversed().thenComparing(TeamMatchPoints::getTeam);
+
+            Collections.sort(finalTeamMatchPoints, comparator);
+
+            int rank = 1;
+
+            for (TeamMatchPoints team : finalTeamMatchPoints) {
+
+                Integer points = team.getPoints();
+                System.out.println(rank + ". " + team.getTeam() + ", " + points + (points.equals(1) ? " pt" : " pts"));
+                rank++;
+
+            }
             
         }
     }
 
-    public static HashMap<String, Integer> reduceTeamMatchPoints (List<HashMap<String, Integer>> allMatchesTeamPoints) {
+    public static List<TeamMatchPoints> reduceTeamMatchPoints (List<TeamMatchPoints> allTeamMatchPoints) {
         HashMap<String, Integer> finalTeamPoints = new HashMap<>();
+        List<TeamMatchPoints> reducedMatchPoints = new ArrayList<>();
 
-        for (HashMap<String, Integer> matchTeamPoints :
-                allMatchesTeamPoints) {
+        for (TeamMatchPoints matchPoints : allTeamMatchPoints) {
 
-            for (Map.Entry<String, Integer> entry : matchTeamPoints.entrySet()) {
-                String name = entry.getKey();
-                Integer points = entry.getValue();
+                String name = matchPoints.getTeam();
+                Integer points = matchPoints.getPoints();
 
 
                 if (!finalTeamPoints.containsKey(name)) {
@@ -73,9 +103,19 @@ public class Main {
                 }
             }
 
+        for (Map.Entry<String, Integer> entry : finalTeamPoints.entrySet()) {
+
+            TeamMatchPoints teamPoints = new TeamMatchPoints();
+
+            teamPoints.setTeam(entry.getKey());
+            teamPoints.setPoints(entry.getValue());
+
+            reducedMatchPoints.add(teamPoints);
         }
 
-        return finalTeamPoints;
+
+
+        return reducedMatchPoints;
     }
 
     public static void delayedPrint(String text, Integer delay) {
@@ -98,34 +138,38 @@ public class Main {
         },  3000);
     }
 
-    public static HashMap<String, Integer> calculateMatchPoints(List<List<String>> matchResults) {
+    public static List<TeamMatchPoints> calculateMatchPoints(List<TeamScore> matchResults) {
 
-        HashMap<String, Integer> matchPoints = new HashMap<>();
-        List<String> teamA = matchResults.get(0);
-        List<String> teamB = matchResults.get(1);
+        List<TeamMatchPoints> matchPoints = new ArrayList<>();
+        TeamMatchPoints teamAPoints = new TeamMatchPoints();
+        TeamMatchPoints teamBPoints = new TeamMatchPoints();
 
-        String teamAName = teamA.get(0);
-        Integer teamAGoals = Integer.valueOf(teamA.get(1));
+        TeamScore teamA = matchResults.get(0);
+        TeamScore teamB = matchResults.get(1);
 
-        String teamBName = teamB.get(0);
-        Integer teamBGoals = Integer.valueOf(teamB.get(1));
+        String teamAName = teamA.getTeam();
+        Integer teamAGoals = teamA.getScore();
+        teamAPoints.setTeam(teamAName);
+        teamAPoints.setPoints(0);
 
-        int teamAPoints = 0;
-        int teamBPoints = 0;
+        String teamBName = teamB.getTeam();
+        Integer teamBGoals = teamB.getScore();
+        teamBPoints.setTeam(teamBName);
+        teamBPoints.setPoints(0);
 
         if (teamAGoals.equals(teamBGoals)) {
 
-            teamAPoints = 1;
-            teamBPoints = 1;
+            teamAPoints.setPoints(1);
+            teamBPoints.setPoints(1);
 
         } else if (teamAGoals > teamBGoals) {
-            teamAPoints = 3;
+            teamAPoints.setPoints(3);
         } else {
-            teamBPoints = 3;
+            teamBPoints.setPoints(3);
         }
 
-        matchPoints.put(teamAName, teamAPoints);
-        matchPoints.put(teamBName, teamBPoints);
+        matchPoints.add(teamAPoints);
+        matchPoints.add(teamBPoints);
 
         return matchPoints;
     }
