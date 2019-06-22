@@ -66,4 +66,37 @@ public class Main {
             }
         },  3000);
     }
+
+    public static HashMap<String, Integer> calculateMatchPoints(List<List<String>> matchResults) {
+
+        HashMap<String, Integer> matchPoints = new HashMap<>();
+        List<String> teamA = matchResults.get(0);
+        List<String> teamB = matchResults.get(1);
+
+        String teamAName = teamA.get(0);
+        Integer teamAGoals = Integer.valueOf(teamA.get(1));
+
+        String teamBName = teamB.get(0);
+        Integer teamBGoals = Integer.valueOf(teamB.get(1));
+
+        int teamAPoints = 0;
+        int teamBPoints = 0;
+
+        if (teamAGoals.equals(teamBGoals)) {
+
+            teamAPoints = 1;
+            teamBPoints = 1;
+
+        } else if (teamAGoals > teamBGoals) {
+            teamAPoints = 3;
+        } else {
+            teamBPoints = 3;
+        }
+
+        matchPoints.put(teamAName, teamAPoints);
+        matchPoints.put(teamBName, teamBPoints);
+
+        return matchPoints;
+    }
+
 }
