@@ -10,7 +10,24 @@ public class Main {
 
         List<List<List<String>>> allResults = new ArrayList<>();
 
-        String file = "";
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Hello there ! You will be asked to input the full path of your file containing: \n");
+
+        Integer initialDelay = 3000;
+        Integer delay = initialDelay;
+
+        delayedPrint("This program will calculate the ranking table for a soccer league.\n", delay);
+        delay += initialDelay;
+
+        delayedPrint("The data for the results of the games should be stored in a text file.\n", delay);
+        delay += initialDelay;
+
+        delayedPrint("Please provide the full path of the file where your results are stored:\n");
+
+        String file = scanner.next();
+
+        HashMap<String, Integer> finalTeamPoints = new HashMap<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
