@@ -2,19 +2,30 @@ package com.danielmaartens;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        List<List<String>> records = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader("book.csv"))) {
+
+        List<List<List<String>>> allResults = new ArrayList<>();
+
+        String file = "";
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
+            List<List<String>> results = new ArrayList<>();
+
             while ((line = br.readLine()) != null) {
-                String[] values = line.split(",");
-                records.add(Arrays.asList(values));
+                String[] matchResults = line.split(",");
+
+                for (String result:
+                     matchResults) {
+                    String[] teamResults = result.split(" ");
+                    results.add(Arrays.asList(teamResults));
+                }
+
+                allResults.add(results);
             }
         }
     }
