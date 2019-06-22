@@ -1,6 +1,6 @@
 package com.danielmaartens;
 
-public class MatchPoints {
+public class TeamMatchPoints {
 
     private String team;
     private Integer points;
