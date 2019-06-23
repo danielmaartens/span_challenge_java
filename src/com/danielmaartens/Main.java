@@ -8,6 +8,8 @@ import java.util.regex.Pattern;
 
 public class Main {
 
+    public static final String TeamResultGroupingPattern = "^([a-zA-Z\\s]+)([0-9]+$)";
+
     public static void main(String[] args) throws Exception {
 
         List<List<List<String>>> allResults = new ArrayList<>();
@@ -33,7 +35,7 @@ public class Main {
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
-            Pattern p = Pattern.compile("^([a-zA-Z\\s]+)([0-9]+$)");
+            Pattern p = Pattern.compile(TeamResultGroupingPattern);
             
             while ((line = br.readLine()) != null) {
                 
@@ -43,18 +45,10 @@ public class Main {
 
                 for (String result: matchResults) {
 
-                    // Use regex pattern to match team names that include spaces
-                    Matcher m = p.matcher(result);
+                    TeamValue teamResult = getTeamResultFromString(result, p);
 
-                    if (m.find()) {
-
-                        String team = m.group(1);
-                        Integer value = Integer.valueOf(m.group(2));
-
-                        // Remove the last space from the team name
-                        String name = team.substring(0, team.length()-1);
-
-                        scores.add(new TeamValue(name, value));
+                    if (teamResult != null) {
+                        scores.add(teamResult);
                     }
 
                 }
@@ -65,10 +59,7 @@ public class Main {
 
             List<TeamValue> finalTeamMatchPoints = reduceTeamMatchPoints(teamMatchPoints);
 
-            // Sort team match points by points and then by team name (if points are the same)
-            Comparator<TeamValue> comparator = Comparator.comparingInt(TeamValue::getValue).reversed().thenComparing(TeamValue::getName);
-
-            Collections.sort(finalTeamMatchPoints, comparator);
+            sort(finalTeamMatchPoints);
 
             int rank = 1;
 
@@ -81,6 +72,33 @@ public class Main {
             }
             
         }
+    }
+
+    public static TeamValue getTeamResultFromString(String result, Pattern pattern) {
+
+        // Use regex pattern to match team names that include spaces
+        Matcher m = pattern.matcher(result);
+
+        if (m.find()) {
+
+            String team = m.group(1);
+
+            // Remove the last space from the team name
+            String name = team.substring(0, team.length()-1);
+
+            Integer value = Integer.valueOf(m.group(2));
+
+            return new TeamValue(name, value);
+        }
+
+        return null;
+    }
+
+    public static void sort(List<TeamValue> finalTeamMatchPoints) {
+        // Sort team match points by points and then by team name (if points are the same)
+        Comparator<TeamValue> comparator = Comparator.comparingInt(TeamValue::getValue).reversed().thenComparing(TeamValue::getName);
+
+        Collections.sort(finalTeamMatchPoints, comparator);
     }
 
     public static List<TeamValue> reduceTeamMatchPoints (List<TeamValue> allTeamMatchPoints) {
