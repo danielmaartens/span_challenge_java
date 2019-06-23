@@ -1,5 +1,3 @@
-package com.danielmaartens;
-
 public class TeamValue {
 
     private String name;

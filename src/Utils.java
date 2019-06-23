@@ -1,69 +1,51 @@
-package com.danielmaartens;
-
-import utils.Utils;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Main {
+public class Utils {
 
-    public static final String TeamResultGroupingPattern = "^([a-zA-Z\\s]+)([0-9]+$)";
+    static final String TeamResultGroupingPattern = "^([a-zA-Z\\s]+)([0-9]+$)";
 
-    public static void main(String[] args) throws Exception {
+    static HashMap<String, Integer> convertTeamValueListToMap(List<TeamValue> teamValues) {
+        HashMap<String, Integer> map = new HashMap<String, Integer>();
 
-        Scanner scanner = new Scanner(System.in);
-        Boolean running = true;
+        for (TeamValue team : teamValues) map.put(team.getName(), team.getValue());
 
-        System.out.println("\nWelcome to the Match Point Calculator !\n");
+        return map;
+    }
 
-        Integer initialDelay = 1500;
-        Integer delay = initialDelay;
 
-        delayedPrint("This program will calculate the ranking table for a soccer league.\n", delay);
-        delay += initialDelay;
+    public static List<TeamValue> convertTeamValueMapToList(HashMap<String, Integer> teamValuesMap) {
+        List<TeamValue> list = new ArrayList<>();
 
-        delayedPrint("The data for the results of the games should be stored in a text file.", delay);
-        delay += initialDelay;
+        for (Map.Entry<String, Integer> entry : teamValuesMap.entrySet()) {
 
-        while (running) {
+            TeamValue team = new TeamValue(entry.getKey(), entry.getValue());
 
-            delayedPrint("\nPlease provide the full path of the file where your results are stored:\n", delay);
-            delayedPrint("Full File Path: ", delay + 10);
-
-            String file = scanner.next();
-
-            try {
-                System.out.println("\nRESULTS\n");
-
-                List<TeamValue> finalTeamMatchPoints = getOrderedMatchPointsFromFile(file);
-
-                for (TeamValue team : finalTeamMatchPoints) {
-
-                    Integer points = team.getValue();
-                    System.out.println(team.getRank() + ". " + team.getName() + ", " + points + (points.equals(1) ? " pt" : " pts"));
-
-                }
-
-                System.out.println("\nWould you like to check match point results of another league ? [Y/N]: ");
-
-                String answer = scanner.next();
-
-                running = Utils.booleanFromString(answer);
-                delay = 0;
-
-            } catch (Exception e) {
-                System.out.println("Something went wrong while trying to calculate the match points: " + e.getMessage());
-            }
+            list.add(team);
         }
 
-        System.out.println("\nThank you for using the Match Point Calculator !");
-        System.exit(0);
+        return list;
+    }
 
+    public static Boolean booleanFromString(String s) {
+        String lowerCaseS = s.toLowerCase();
+
+        switch (lowerCaseS) {
+            case "y":
+            case "yes":
+                return true;
+            case "n":
+            case "no":
+                return false;
+            default:
+                return null;
+        }
 
     }
+
 
     public static void setTeamRanks(List<TeamValue> sortedTeamValues) {
 
@@ -226,5 +208,4 @@ public class Main {
 
         return matchPoints;
     }
-
 }

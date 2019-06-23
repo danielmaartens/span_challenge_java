@@ -1,33 +1,26 @@
-package test;
-
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.danielmaartens.Main;
-import com.danielmaartens.TeamValue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import utils.Utils;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class Tests {
 
     private final TeamValue teamValue = new TeamValue("GoGetters", 10);
 
-    private final Pattern teamResultGroupingPattern = Pattern.compile(Main.TeamResultGroupingPattern);
+    private final Pattern teamResultGroupingPattern = Pattern.compile(Utils.TeamResultGroupingPattern);
 
     private final String file = Paths.get("input.csv").toString();
 
-    HashMap<String, Integer> matchPointsMap;
-    List<TeamValue> allTeamMatchPoints;
+    private HashMap<String, Integer> matchPointsMap;
+    private List<TeamValue> allTeamMatchPoints;
 
     @Test
     @DisplayName("Check Team Value Class")
@@ -41,7 +34,7 @@ public class Tests {
     @Test
     @DisplayName("Check Team Result From String")
     void teamResultFromString() {
-        TeamValue teamResult = Main.getTeamResultFromString("FC Awesome 1", teamResultGroupingPattern);
+        TeamValue teamResult = Utils.getTeamResultFromString("FC Awesome 1", teamResultGroupingPattern);
         assertAll("Team Result",
                 () -> {
                     String name = teamResult.getName();
@@ -66,7 +59,7 @@ public class Tests {
             matchResults.add(teamAResult);
             matchResults.add(teamBResult);
 
-            List<TeamValue> matchPoints = Main.calculateMatchPoints(matchResults);
+            List<TeamValue> matchPoints = Utils.calculateMatchPoints(matchResults);
             matchPointsMap = Utils.convertTeamValueListToMap(matchPoints);
         }
 
@@ -100,7 +93,7 @@ public class Tests {
             matchResults.add(teamAResult);
             matchResults.add(teamBResult);
 
-            List<TeamValue> matchPoints = Main.calculateMatchPoints(matchResults);
+            List<TeamValue> matchPoints = Utils.calculateMatchPoints(matchResults);
             matchPointsMap = Utils.convertTeamValueListToMap(matchPoints);
         }
 
@@ -128,7 +121,7 @@ public class Tests {
 
         @BeforeEach
         void initialiseFinalResult() throws Exception {
-            allTeamMatchPoints = Main.getOrderedMatchPointsFromFile(file);
+            allTeamMatchPoints = Utils.getOrderedMatchPointsFromFile(file);
         }
 
         @Test
