@@ -40,14 +40,10 @@ public class Main {
 
                 List<TeamValue> finalTeamMatchPoints = getOrderedMatchPointsFromFile(file);
 
-                int rank = 1;
-
-
                 for (TeamValue team : finalTeamMatchPoints) {
 
                     Integer points = team.getValue();
-                    System.out.println(rank + ". " + team.getName() + ", " + points + (points.equals(1) ? " pt" : " pts"));
-                    rank++;
+                    System.out.println(team.getPosition() + ". " + team.getName() + ", " + points + (points.equals(1) ? " pt" : " pts"));
 
                 }
 
@@ -85,6 +81,32 @@ public class Main {
 
     }
 
+    public static void setTeamPositions(List<TeamValue> sortedTeamValues) {
+
+        int index = 1;
+        Integer position = 0;
+        Integer previousTeamValue = null;
+
+        for (TeamValue team : sortedTeamValues) {
+
+            Integer thisTeamValue = team.getValue();
+
+            if (!thisTeamValue.equals(previousTeamValue)) {
+                position++;
+            }
+
+            team.setPosition(position);
+
+            if (thisTeamValue.equals(previousTeamValue)) {
+                position = index;
+            }
+
+            previousTeamValue = team.getValue();
+            index++;
+
+        }
+    }
+
     public static List<TeamValue> getOrderedMatchPointsFromFile(String file) throws Exception {
         List<TeamValue> teamMatchPoints = new ArrayList<>();
         List<TeamValue> finalTeamMatchPoints = new ArrayList<>();
@@ -117,6 +139,7 @@ public class Main {
         finalTeamMatchPoints = reduceTeamMatchPoints(teamMatchPoints);
 
         sort(finalTeamMatchPoints);
+        setTeamPositions(finalTeamMatchPoints);
 
         return finalTeamMatchPoints;
     }
