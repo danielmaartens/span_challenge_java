@@ -1,5 +1,7 @@
 package com.danielmaartens;
 
+import utils.Utils;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.*;
@@ -103,13 +105,11 @@ public class Main {
 
     public static List<TeamValue> reduceTeamMatchPoints (List<TeamValue> allTeamMatchPoints) {
         HashMap<String, Integer> finalTeamPoints = new HashMap<>();
-        List<TeamValue> reducedMatchPoints = new ArrayList<>();
 
         for (TeamValue matchPoints : allTeamMatchPoints) {
 
                 String name = matchPoints.getName();
                 Integer points = matchPoints.getValue();
-
 
                 if (!finalTeamPoints.containsKey(name)) {
                     finalTeamPoints.put(name, points);
@@ -120,16 +120,7 @@ public class Main {
                 }
             }
 
-        for (Map.Entry<String, Integer> entry : finalTeamPoints.entrySet()) {
-
-            TeamValue teamPoints = new TeamValue(entry.getKey(), entry.getValue());
-
-            reducedMatchPoints.add(teamPoints);
-        }
-
-
-
-        return reducedMatchPoints;
+        return Utils.convertTeamValueMapToList(finalTeamPoints);
     }
 
     public static void delayedPrint(String text, Integer delay) {
