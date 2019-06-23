@@ -29,7 +29,7 @@ public class Main {
 
         String file = scanner.next();
         
-        List<TeamMatchPoints> teamMatchPoints = new ArrayList<>();
+        List<TeamValue> teamMatchPoints = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
@@ -37,25 +37,24 @@ public class Main {
             
             while ((line = br.readLine()) != null) {
                 
-                List<TeamScore> scores = new ArrayList<>();
+                List<TeamValue> scores = new ArrayList<>();
                 
                 String[] matchResults = line.split(", ");
 
                 for (String result: matchResults) {
 
-                    // Use regex pattern to match team names with spaces
+                    // Use regex pattern to match team names that include spaces
                     Matcher m = p.matcher(result);
 
                     if (m.find()) {
-                        TeamScore score = new TeamScore();
 
                         String team = m.group(1);
+                        Integer value = Integer.valueOf(m.group(2));
 
                         // Remove the last space from the team name
-                        score.setTeam(team.substring(0, team.length()-1));
-                        score.setScore(Integer.valueOf(m.group(2)));
+                        String name = team.substring(0, team.length()-1);
 
-                        scores.add(score);
+                        scores.add(new TeamValue(name, value));
                     }
 
                 }
@@ -64,19 +63,19 @@ public class Main {
                 
             }
 
-            List<TeamMatchPoints> finalTeamMatchPoints = reduceTeamMatchPoints(teamMatchPoints);
+            List<TeamValue> finalTeamMatchPoints = reduceTeamMatchPoints(teamMatchPoints);
 
             // Sort team match points by points and then by team name (if points are the same)
-            Comparator<TeamMatchPoints> comparator = Comparator.comparingInt(TeamMatchPoints::getPoints).reversed().thenComparing(TeamMatchPoints::getTeam);
+            Comparator<TeamValue> comparator = Comparator.comparingInt(TeamValue::getValue).reversed().thenComparing(TeamValue::getName);
 
             Collections.sort(finalTeamMatchPoints, comparator);
 
             int rank = 1;
 
-            for (TeamMatchPoints team : finalTeamMatchPoints) {
+            for (TeamValue team : finalTeamMatchPoints) {
 
-                Integer points = team.getPoints();
-                System.out.println(rank + ". " + team.getTeam() + ", " + points + (points.equals(1) ? " pt" : " pts"));
+                Integer points = team.getValue();
+                System.out.println(rank + ". " + team.getName() + ", " + points + (points.equals(1) ? " pt" : " pts"));
                 rank++;
 
             }
@@ -84,14 +83,14 @@ public class Main {
         }
     }
 
-    public static List<TeamMatchPoints> reduceTeamMatchPoints (List<TeamMatchPoints> allTeamMatchPoints) {
+    public static List<TeamValue> reduceTeamMatchPoints (List<TeamValue> allTeamMatchPoints) {
         HashMap<String, Integer> finalTeamPoints = new HashMap<>();
-        List<TeamMatchPoints> reducedMatchPoints = new ArrayList<>();
+        List<TeamValue> reducedMatchPoints = new ArrayList<>();
 
-        for (TeamMatchPoints matchPoints : allTeamMatchPoints) {
+        for (TeamValue matchPoints : allTeamMatchPoints) {
 
-                String name = matchPoints.getTeam();
-                Integer points = matchPoints.getPoints();
+                String name = matchPoints.getName();
+                Integer points = matchPoints.getValue();
 
 
                 if (!finalTeamPoints.containsKey(name)) {
@@ -105,10 +104,7 @@ public class Main {
 
         for (Map.Entry<String, Integer> entry : finalTeamPoints.entrySet()) {
 
-            TeamMatchPoints teamPoints = new TeamMatchPoints();
-
-            teamPoints.setTeam(entry.getKey());
-            teamPoints.setPoints(entry.getValue());
+            TeamValue teamPoints = new TeamValue(entry.getKey(), entry.getValue());
 
             reducedMatchPoints.add(teamPoints);
         }
@@ -138,34 +134,30 @@ public class Main {
         },  3000);
     }
 
-    public static List<TeamMatchPoints> calculateMatchPoints(List<TeamScore> matchResults) {
+    public static List<TeamValue> calculateMatchPoints(List<TeamValue> matchResults) {
 
-        List<TeamMatchPoints> matchPoints = new ArrayList<>();
-        TeamMatchPoints teamAPoints = new TeamMatchPoints();
-        TeamMatchPoints teamBPoints = new TeamMatchPoints();
+        List<TeamValue> matchPoints = new ArrayList<>();
 
-        TeamScore teamA = matchResults.get(0);
-        TeamScore teamB = matchResults.get(1);
+        TeamValue teamA = matchResults.get(0);
+        TeamValue teamB = matchResults.get(1);
 
-        String teamAName = teamA.getTeam();
-        Integer teamAGoals = teamA.getScore();
-        teamAPoints.setTeam(teamAName);
-        teamAPoints.setPoints(0);
+        String teamAName = teamA.getName();
+        Integer teamAGoals = teamA.getValue();
+        TeamValue teamAPoints = new TeamValue(teamAName, 0);
 
-        String teamBName = teamB.getTeam();
-        Integer teamBGoals = teamB.getScore();
-        teamBPoints.setTeam(teamBName);
-        teamBPoints.setPoints(0);
+        String teamBName = teamB.getName();
+        Integer teamBGoals = teamB.getValue();
+        TeamValue teamBPoints = new TeamValue(teamBName, 0);
 
         if (teamAGoals.equals(teamBGoals)) {
 
-            teamAPoints.setPoints(1);
-            teamBPoints.setPoints(1);
+            teamAPoints.setValue(1);
+            teamBPoints.setValue(1);
 
         } else if (teamAGoals > teamBGoals) {
-            teamAPoints.setPoints(3);
+            teamAPoints.setValue(3);
         } else {
-            teamBPoints.setPoints(3);
+            teamBPoints.setValue(3);
         }
 
         matchPoints.add(teamAPoints);
