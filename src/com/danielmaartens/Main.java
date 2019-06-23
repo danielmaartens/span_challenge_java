@@ -14,38 +14,92 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
 
-        List<List<List<String>>> allResults = new ArrayList<>();
-
         Scanner scanner = new Scanner(System.in);
+        Boolean running = true;
 
-        System.out.println("\nHello there !\n");
+        System.out.println("\nWelcome to the Match Point Calculator !\n");
 
-        Integer initialDelay = 1000;
+        Integer initialDelay = 1500;
         Integer delay = initialDelay;
 
         delayedPrint("This program will calculate the ranking table for a soccer league.\n", delay);
         delay += initialDelay;
 
-        delayedPrint("The data for the results of the games should be stored in a text file.\n", delay);
+        delayedPrint("The data for the results of the games should be stored in a text file.", delay);
         delay += initialDelay;
 
-        delayedPrint("Please provide the full path of the file where your results are stored:\n", delay);
+        while (running) {
 
-        String file = scanner.next();
-        
+            delayedPrint("\nPlease provide the full path of the file where your results are stored:\n", delay);
+            delayedPrint("Full File Path: ", delay + 10);
+
+            String file = scanner.next();
+
+            try {
+                System.out.println("\nRESULTS\n");
+
+                List<TeamValue> finalTeamMatchPoints = getOrderedMatchPointsFromFile(file);
+
+                int rank = 1;
+
+
+                for (TeamValue team : finalTeamMatchPoints) {
+
+                    Integer points = team.getValue();
+                    System.out.println(rank + ". " + team.getName() + ", " + points + (points.equals(1) ? " pt" : " pts"));
+                    rank++;
+
+                }
+
+                System.out.println("\nWould you like to check match point results of another league ? [Y/N]: ");
+
+                String answer = scanner.next();
+
+                running = booleanFromString(answer);
+                delay = 0;
+
+            } catch (Exception e) {
+                System.out.println("Something went wrong while trying to calculate the match points: " + e.getMessage());
+            }
+        }
+
+        System.out.println("\nThank you for using the Match Point Calculator !");
+        System.exit(0);
+
+
+    }
+
+    public static Boolean booleanFromString(String s) {
+        String lowerCaseS = s.toLowerCase();
+
+        switch (lowerCaseS) {
+            case "y":
+            case "yes":
+                return true;
+            case "n":
+            case "no":
+                return false;
+            default:
+                return null;
+        }
+
+    }
+
+    public static List<TeamValue> getOrderedMatchPointsFromFile(String file) throws Exception {
         List<TeamValue> teamMatchPoints = new ArrayList<>();
+        List<TeamValue> finalTeamMatchPoints = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
             Pattern p = Pattern.compile(TeamResultGroupingPattern);
-            
+
             while ((line = br.readLine()) != null) {
-                
+
                 List<TeamValue> scores = new ArrayList<>();
-                
+
                 String[] matchResults = line.split(", ");
 
-                for (String result: matchResults) {
+                for (String result : matchResults) {
 
                     TeamValue teamResult = getTeamResultFromString(result, p);
 
@@ -54,26 +108,17 @@ public class Main {
                     }
 
                 }
-                
+
                 teamMatchPoints.addAll(calculateMatchPoints(scores));
-                
-            }
-
-            List<TeamValue> finalTeamMatchPoints = reduceTeamMatchPoints(teamMatchPoints);
-
-            sort(finalTeamMatchPoints);
-
-            int rank = 1;
-
-            for (TeamValue team : finalTeamMatchPoints) {
-
-                Integer points = team.getValue();
-                System.out.println(rank + ". " + team.getName() + ", " + points + (points.equals(1) ? " pt" : " pts"));
-                rank++;
 
             }
-            
         }
+
+        finalTeamMatchPoints = reduceTeamMatchPoints(teamMatchPoints);
+
+        sort(finalTeamMatchPoints);
+
+        return finalTeamMatchPoints;
     }
 
     public static TeamValue getTeamResultFromString(String result, Pattern pattern) {
@@ -86,7 +131,7 @@ public class Main {
             String team = m.group(1);
 
             // Remove the last space from the team name
-            String name = team.substring(0, team.length()-1);
+            String name = team.substring(0, team.length() - 1);
 
             Integer value = Integer.valueOf(m.group(2));
 
@@ -103,22 +148,22 @@ public class Main {
         Collections.sort(finalTeamMatchPoints, comparator);
     }
 
-    public static List<TeamValue> reduceTeamMatchPoints (List<TeamValue> allTeamMatchPoints) {
+    public static List<TeamValue> reduceTeamMatchPoints(List<TeamValue> allTeamMatchPoints) {
         HashMap<String, Integer> finalTeamPoints = new HashMap<>();
 
         for (TeamValue matchPoints : allTeamMatchPoints) {
 
-                String name = matchPoints.getName();
-                Integer points = matchPoints.getValue();
+            String name = matchPoints.getName();
+            Integer points = matchPoints.getValue();
 
-                if (!finalTeamPoints.containsKey(name)) {
-                    finalTeamPoints.put(name, points);
-                } else {
-                    Integer nextPointsTotal = finalTeamPoints.get(name) + points;
+            if (!finalTeamPoints.containsKey(name)) {
+                finalTeamPoints.put(name, points);
+            } else {
+                Integer nextPointsTotal = finalTeamPoints.get(name) + points;
 
-                    finalTeamPoints.put(name, nextPointsTotal);
-                }
+                finalTeamPoints.put(name, nextPointsTotal);
             }
+        }
 
         return Utils.convertTeamValueMapToList(finalTeamPoints);
     }
@@ -130,7 +175,7 @@ public class Main {
             public void run() {
                 System.out.println(text);
             }
-        },  delay);
+        }, delay);
     }
 
     public static void delayedPrint(String text) {
@@ -140,7 +185,7 @@ public class Main {
             public void run() {
                 System.out.println(text);
             }
-        },  3000);
+        }, 3000);
     }
 
     public static List<TeamValue> calculateMatchPoints(List<TeamValue> matchResults) {
