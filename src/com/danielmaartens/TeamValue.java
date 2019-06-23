@@ -4,7 +4,7 @@ public class TeamValue {
 
     private String name;
     private Integer value;
-    private Integer position;
+    private Integer rank;
 
     public TeamValue(String name, Integer value) {
         this.name = name;
@@ -28,11 +28,11 @@ public class TeamValue {
     }
 
 
-    public void setPosition(Integer position) {
-        this.position = position;
+    public void setRank(Integer rank) {
+        this.rank = rank;
     }
 
-    public Integer getPosition() {
-        return this.position;
+    public Integer getRank() {
+        return this.rank;
     }
 }

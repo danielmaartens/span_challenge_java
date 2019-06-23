@@ -43,7 +43,7 @@ public class Main {
                 for (TeamValue team : finalTeamMatchPoints) {
 
                     Integer points = team.getValue();
-                    System.out.println(team.getPosition() + ". " + team.getName() + ", " + points + (points.equals(1) ? " pt" : " pts"));
+                    System.out.println(team.getRank() + ". " + team.getName() + ", " + points + (points.equals(1) ? " pt" : " pts"));
 
                 }
 
@@ -84,7 +84,7 @@ public class Main {
     public static void setTeamPositions(List<TeamValue> sortedTeamValues) {
 
         int index = 1;
-        Integer position = 0;
+        Integer rank = 0;
         Integer previousTeamValue = null;
 
         for (TeamValue team : sortedTeamValues) {
@@ -92,13 +92,13 @@ public class Main {
             Integer thisTeamValue = team.getValue();
 
             if (!thisTeamValue.equals(previousTeamValue)) {
-                position++;
+                rank++;
             }
 
-            team.setPosition(position);
+            team.setRank(rank);
 
             if (thisTeamValue.equals(previousTeamValue)) {
-                position = index;
+                rank = index;
             }
 
             previousTeamValue = team.getValue();
