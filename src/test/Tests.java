@@ -9,7 +9,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import com.danielmaartens.Main.*;
 import utils.Utils;
 
 import java.util.ArrayList;
@@ -31,9 +30,8 @@ public class Tests {
     List<TeamValue> allTeamMatchPoints;
 
     @Test
+    @DisplayName("Check Team Value Class")
     void teamValue() {
-        // In a grouped assertion all assertions are executed, and all
-        // failures will be reported together.
         assertAll("TeamValue",
                 () -> assertEquals("GoGetters", teamValue.getName()),
                 () -> assertEquals(10, teamValue.getValue())
@@ -41,6 +39,7 @@ public class Tests {
     }
 
     @Test
+    @DisplayName("Check Team Result From String")
     void teamResultFromString() {
         TeamValue teamResult = Main.getTeamResultFromString("FC Awesome 1", teamResultGroupingPattern);
         assertAll("Team Result",
