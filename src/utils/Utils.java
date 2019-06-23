@@ -30,4 +30,20 @@ public class Utils {
 
         return list;
     }
+
+    public static Boolean booleanFromString(String s) {
+        String lowerCaseS = s.toLowerCase();
+
+        switch (lowerCaseS) {
+            case "y":
+            case "yes":
+                return true;
+            case "n":
+            case "no":
+                return false;
+            default:
+                return null;
+        }
+
+    }
 }

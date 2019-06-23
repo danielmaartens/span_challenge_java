@@ -51,7 +51,7 @@ public class Main {
 
                 String answer = scanner.next();
 
-                running = booleanFromString(answer);
+                running = Utils.booleanFromString(answer);
                 delay = 0;
 
             } catch (Exception e) {
@@ -65,43 +65,27 @@ public class Main {
 
     }
 
-    public static Boolean booleanFromString(String s) {
-        String lowerCaseS = s.toLowerCase();
-
-        switch (lowerCaseS) {
-            case "y":
-            case "yes":
-                return true;
-            case "n":
-            case "no":
-                return false;
-            default:
-                return null;
-        }
-
-    }
-
-    public static void setTeamPositions(List<TeamValue> sortedTeamValues) {
+    public static void setTeamRanks(List<TeamValue> sortedTeamValues) {
 
         int index = 1;
-        Integer rank = 0;
-        Integer previousTeamValue = null;
+        int rank = 0;
+        Integer previousTeamPoints = null;
 
         for (TeamValue team : sortedTeamValues) {
 
-            Integer thisTeamValue = team.getValue();
+            Integer points = team.getValue();
 
-            if (!thisTeamValue.equals(previousTeamValue)) {
+            if (!points.equals(previousTeamPoints)) {
                 rank++;
             }
 
             team.setRank(rank);
 
-            if (thisTeamValue.equals(previousTeamValue)) {
+            if (points.equals(previousTeamPoints)) {
                 rank = index;
             }
 
-            previousTeamValue = team.getValue();
+            previousTeamPoints = points;
             index++;
 
         }
@@ -139,7 +123,7 @@ public class Main {
         finalTeamMatchPoints = reduceTeamMatchPoints(teamMatchPoints);
 
         sort(finalTeamMatchPoints);
-        setTeamPositions(finalTeamMatchPoints);
+        setTeamRanks(finalTeamMatchPoints);
 
         return finalTeamMatchPoints;
     }
