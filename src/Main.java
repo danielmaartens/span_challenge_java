@@ -41,8 +41,18 @@ public class Main {
 
                 String answer = scanner.next();
 
-                running = Utils.booleanFromString(answer);
-                delay = 0;
+                Boolean userAnswer = Utils.booleanFromString(answer);
+
+                while (userAnswer == null) {
+                    System.out.println("\nI do not understand your command, please try again from the following options [y|Y|yes|YES|n|N|no|NO]: ");
+                    System.out.println("\nWould you like to check match point results of another league ? [Y/N]: ");
+
+                    answer = scanner.next();
+
+                    userAnswer = Utils.booleanFromString(answer);
+                }
+
+                running = userAnswer;
 
             } catch (Exception e) {
                 System.out.println("Something went wrong while trying to calculate the match points: " + e.getMessage());
