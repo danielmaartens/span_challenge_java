@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -36,6 +37,7 @@ public class Utils {
         switch (lowerCaseS) {
             case "y":
             case "yes":
+            case "c":
                 return true;
             case "n":
             case "no":
@@ -73,9 +75,9 @@ public class Utils {
         }
     }
 
-    public static List<TeamValue> getOrderedMatchPointsFromFile(String file) throws Exception {
+    public static List<TeamValue> getTeamRank(String file) throws Exception {
         List<TeamValue> teamMatchPoints = new ArrayList<>();
-        List<TeamValue> finalTeamMatchPoints = new ArrayList<>();
+        List<TeamValue> finalRank = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
@@ -102,12 +104,12 @@ public class Utils {
             }
         }
 
-        finalTeamMatchPoints = reduceTeamMatchPoints(teamMatchPoints);
+        finalRank = reduceTeamMatchPoints(teamMatchPoints);
 
-        sort(finalTeamMatchPoints);
-        setTeamRanks(finalTeamMatchPoints);
+        sort(finalRank);
+        setTeamRanks(finalRank);
 
-        return finalTeamMatchPoints;
+        return finalRank;
     }
 
     public static TeamValue getTeamResultFromString(String result, Pattern pattern) {
@@ -207,5 +209,10 @@ public class Utils {
         matchPoints.add(teamBPoints);
 
         return matchPoints;
+    }
+
+    public static boolean fileExists(String filePath) {
+        File tempFile = new File(filePath);
+        return tempFile.exists();
     }
 }
