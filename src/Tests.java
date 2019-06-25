@@ -20,7 +20,7 @@ public class Tests {
     private final String file = Paths.get("input.csv").toString();
 
     private HashMap<String, Integer> matchPointsMap;
-    private List<TeamValue> allTeamMatchPoints;
+    private List<TeamValue> finalRank;
 
     @Test
     @DisplayName("Check Team Value Class")
@@ -121,13 +121,13 @@ public class Tests {
 
         @BeforeEach
         void initialiseFinalResult() throws Exception {
-            allTeamMatchPoints = Utils.getOrderedMatchPointsFromFile(file);
+            finalRank = Utils.getTeamRank(file);
         }
 
         @Test
         @DisplayName("Tarantulas should be 1st with 6pts")
         void firstTeam() {
-            TeamValue team = allTeamMatchPoints.get(0);
+            TeamValue team = finalRank.get(0);
             assertAll(
                     () -> assertEquals("Tarantulas", team.getName()),
                     () -> assertEquals(1, team.getRank()),
@@ -138,7 +138,7 @@ public class Tests {
         @Test
         @DisplayName("Lions should be 2nd with 5pts")
         void secondTeam() {
-            TeamValue team = allTeamMatchPoints.get(1);
+            TeamValue team = finalRank.get(1);
             assertAll(
                     () -> assertEquals("Lions", team.getName()),
                     () -> assertEquals(2, team.getRank()),
@@ -149,7 +149,7 @@ public class Tests {
         @Test
         @DisplayName("FC Awesome should be 3rd with 1pt")
         void thirdTeam() {
-            TeamValue team = allTeamMatchPoints.get(2);
+            TeamValue team = finalRank.get(2);
             assertAll(
                     () -> assertEquals("FC Awesome", team.getName()),
                     () -> assertEquals(3, team.getRank()),
@@ -160,7 +160,7 @@ public class Tests {
         @Test
         @DisplayName("Snakes should be 3rd (after FC Awesome) with 1pt")
         void fourthTeam() {
-            TeamValue team = allTeamMatchPoints.get(3);
+            TeamValue team = finalRank.get(3);
             assertAll(
                     () -> assertEquals("Snakes", team.getName()),
                     () -> assertEquals(3, team.getRank()),
@@ -171,7 +171,7 @@ public class Tests {
         @Test
         @DisplayName("Grouches should be 5th with 0pts")
         void fifthTeam() {
-            TeamValue team = allTeamMatchPoints.get(4);
+            TeamValue team = finalRank.get(4);
             assertAll(
                     () -> assertEquals("Grouches", team.getName()),
                     () -> assertEquals(5, team.getRank()),
