@@ -6,8 +6,9 @@ public class Main {
 
         Scanner scanner = new Scanner(System.in);
         Boolean running = true;
+        String userInput;
 
-        System.out.println("\nWelcome to the Match Point Calculator !\n");
+        System.out.println("\nWelcome to the League Points Calculator !\n");
 
         Integer initialDelay = 1500;
         Integer delay = initialDelay;
@@ -25,41 +26,51 @@ public class Main {
 
             String file = scanner.next();
 
-            try {
-                System.out.println("\nRESULTS\n");
+            if (Utils.fileExists(file)) {
+                try {
+                    System.out.println("\nRESULTS\n");
 
-                List<TeamValue> finalTeamMatchPoints = Utils.getOrderedMatchPointsFromFile(file);
+                    List<TeamValue> finalTeamMatchPoints = Utils.getTeamRank(file);
 
-                for (TeamValue team : finalTeamMatchPoints) {
+                    for (TeamValue team : finalTeamMatchPoints) {
 
-                    Integer points = team.getValue();
-                    System.out.println(team.getRank() + ". " + team.getName() + ", " + points + (points.equals(1) ? " pt" : " pts"));
+                        Integer points = team.getValue();
+                        System.out.println(team.getRank() + ". " + team.getName() + ", " + points + (points.equals(1) ? " pt" : " pts"));
 
+                    }
+
+                    System.out.println("\nWould you like to check match point results of another league ? [y/n]: ");
+
+                    userInput = scanner.next();
+
+                    Boolean answerYes = Utils.booleanFromString(userInput);
+
+                    while (answerYes == null) {
+                        System.out.println("\nI do not understand your command, please try again...");
+                        System.out.println("Would you like to check match point results of another league ? [y/n]: ");
+
+                        userInput = scanner.next();
+
+                        answerYes = Utils.booleanFromString(userInput);
+                    }
+
+                    running = answerYes;
+
+                } catch (Exception e) {
+                    System.out.println("Something went wrong while trying to calculate the match points: " + e.getMessage());
                 }
 
-                System.out.println("\nWould you like to check match point results of another league ? [Y/N]: ");
+            } else {
+                System.out.println("\nSorry, your file does not exist ! Please double-check your file path and try again... Press [c] to continue, or any other key (besides ENTER) to exit...\n");
 
-                String answer = scanner.next();
+                userInput = scanner.next();
 
-                Boolean userAnswer = Utils.booleanFromString(answer);
+                running = (Boolean) Utils.booleanFromString(userInput);
 
-                while (userAnswer == null) {
-                    System.out.println("\nI do not understand your command, please try again from the following options [y|Y|yes|YES|n|N|no|NO]: ");
-                    System.out.println("\nWould you like to check match point results of another league ? [Y/N]: ");
-
-                    answer = scanner.next();
-
-                    userAnswer = Utils.booleanFromString(answer);
-                }
-
-                running = userAnswer;
-
-            } catch (Exception e) {
-                System.out.println("Something went wrong while trying to calculate the match points: " + e.getMessage());
             }
         }
 
-        System.out.println("\nThank you for using the Match Point Calculator !");
+        System.out.println("\nThank you for using the League Points Calculator !");
         System.exit(0);
 
 
