@@ -1,6 +1,8 @@
-# span_challenge_java
+# span_challenge_java #
 
-This is a command-line application that will calculate the ranking table for a
+### League Points Calculator
+
+A command-line application written in `Java` that will calculate the ranking table for a
 soccer league.
 
 ### Requirements
