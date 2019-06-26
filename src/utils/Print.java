@@ -61,14 +61,23 @@ public class Print {
         System.out.println(text);
     }
 
-    public int getCurrentDelay(Integer n) {
+    public int getRunningDelay(Integer n) {
         return this.runningDelay + n;
     }
 
-    public int getCurrentDelay() {
+    public int getRunningDelay() {
         return this.runningDelay;
     }
-    public void reset() {
+
+    public Print reset() {
         this.runningDelay = this.initialDelay;
+        return this;
     }
+
+    public Print setRunningDelay(int n) {
+        this.runningDelay = n;
+        return this;
+    }
+
+
 }
