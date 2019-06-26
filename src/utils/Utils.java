@@ -13,7 +13,7 @@ public class Utils {
     public static final String TEAM_RESULT_GROUPING_PATTERN = "^([a-zA-Z\\s]+)([0-9]+$)";
 
     /**
-     * Converts an array of TeamValues to a map with the team name as key with the corresponding value in main.TeamValue object.
+     * Converts a list of TeamValues to a map with the team name as key with the corresponding value in main.TeamValue object.
      * This is so that the tests who know the team name can easily access the value property.
      *
      * @param teamValues
