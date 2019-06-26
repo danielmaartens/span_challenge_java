@@ -8,7 +8,6 @@ soccer league.
 ### Requirements
 
 - Java 11
-- g++
 
 ### NOTE:
 - Results of your soccer league must be in a file with the following structure.
@@ -35,7 +34,7 @@ sh run_with_tests.sh
 ```
 #### Programmatic Execution
 
-Scripts have been provided so that you do not have to focus on any initial setup, besides making sure you have `Java 11` and `g++` installed.
+Scripts have been provided so that you do not have to focus on any initial setup, besides making sure you have `Java 11` installed.
 
 All you have to do is run any one of the following from the project `root`:
 
