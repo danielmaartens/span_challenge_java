@@ -12,6 +12,7 @@ public class Main {
 
         Scanner scanner = new Scanner(System.in);
         Boolean running = true;
+        Boolean answerYes;
         String userInput;
         Print print = new Print(1500);
 
@@ -21,10 +22,13 @@ public class Main {
 
         print.withDelay("The data for the results of the games should be stored in a text file.");
 
+        int delayBeforeLoop = print.getRunningDelay();
+
         while (running) {
 
+
             print.withDelay("\nPlease provide the full path of the file where your results are stored:\n");
-            print.withDelay("Full File Path To Data: ", print.getCurrentDelay(10));
+            print.withDelay("Full File Path To Data: ", delayBeforeLoop + 1);
 
             String file = scanner.next();
 
@@ -45,7 +49,7 @@ public class Main {
 
                     userInput = scanner.next();
 
-                    Boolean answerYes = Utils.booleanFromString(userInput);
+                    answerYes = Utils.booleanFromString(userInput);
 
                     while (answerYes == null) {
                         System.out.println("\nI do not understand your command, please try again...");
@@ -67,9 +71,14 @@ public class Main {
 
                 userInput = scanner.next();
 
-                running = (Boolean) Utils.booleanFromString(userInput);
+                answerYes = Utils.booleanFromString(userInput);
+
+                running = answerYes == null ? false : answerYes;
 
             }
+
+            print.setRunningDelay(0);
+            delayBeforeLoop = 0;
         }
 
         System.out.println("\nThank you for using the League Rank Calculator !");
