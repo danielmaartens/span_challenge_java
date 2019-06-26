@@ -18,7 +18,7 @@ import java.util.TimerTask;
  * The class is instantiated with an initialDelay.
  * Once the print.delayed() function is invoked the initialDelay will be added to the current runningDelay.
  *
- * Every time the print.delayed() is invoked it uses the runningDelay property to figure out how long it should sleep for.
+ * Every time we print.delayed() is invoked it uses the runningDelay property to figure out how long it should sleep for.
  *
  * So every subsequent call to the function will always result in an even withDelay between subsequent outputs.
  */
