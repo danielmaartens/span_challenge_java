@@ -73,7 +73,7 @@ public class Utils {
 
     /**
      * Sets the rank value for all teams.
-     * Note: the array must be sorted.
+     * Note: the list must be sorted.
      *
      * @param sortedTeamValues
      */
