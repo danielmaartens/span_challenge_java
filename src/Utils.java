@@ -7,8 +7,15 @@ import java.util.regex.Pattern;
 
 public class Utils {
 
-    static final String TeamResultGroupingPattern = "^([a-zA-Z\\s]+)([0-9]+$)";
+    static final String TEAM_RESULT_GROUPING_PATTERN = "^([a-zA-Z\\s]+)([0-9]+$)";
 
+    /**
+     * Converts an array of TeamValues to a map with the team name as key with the corresponding value in TeamValue object.
+     * This is so that the tests who know the team name can easily access the value property.
+     *
+     * @param teamValues
+     * @return
+     */
     static HashMap<String, Integer> convertTeamValueListToMap(List<TeamValue> teamValues) {
         HashMap<String, Integer> map = new HashMap<String, Integer>();
 
@@ -18,7 +25,13 @@ public class Utils {
     }
 
 
-    public static List<TeamValue> convertTeamValueMapToList(HashMap<String, Integer> teamValuesMap) {
+    /**
+     * Convert a map object to a list for easier processing of data later.
+     *
+     * @param teamValuesMap
+     * @return
+     */
+    private static List<TeamValue> convertTeamValueMapToList(HashMap<String, Integer> teamValuesMap) {
         List<TeamValue> list = new ArrayList<>();
 
         for (Map.Entry<String, Integer> entry : teamValuesMap.entrySet()) {
@@ -31,7 +44,13 @@ public class Utils {
         return list;
     }
 
-    public static Boolean booleanFromString(String s) {
+    /**
+     * Converts expected user input for yes/no/continue questions into a boolean value.
+     *
+     * @param s
+     * @return
+     */
+    static Boolean booleanFromString(String s) {
         String lowerCaseS = s.toLowerCase();
 
         switch (lowerCaseS) {
@@ -49,7 +68,13 @@ public class Utils {
     }
 
 
-    public static void setTeamRanks(List<TeamValue> sortedTeamValues) {
+    /**
+     * Sets the rank value for all teams.
+     * Note: the array must be sorted.
+     *
+     * @param sortedTeamValues
+     */
+    private static void setTeamRanks(List<TeamValue> sortedTeamValues) {
 
         int index = 1;
         int rank = 0;
@@ -59,60 +84,103 @@ public class Utils {
 
             Integer points = team.getValue();
 
+            // Only change rank to running index if current points and previous points are different
+            // This is to make sure that teams who have the same points have the same rank.
             if (!points.equals(previousTeamPoints)) {
-                rank++;
+                rank = index;
             }
 
             team.setRank(rank);
 
-            if (points.equals(previousTeamPoints)) {
-                rank = index;
-            }
-
+            // Set previous points to current points for next iteration check.
             previousTeamPoints = points;
             index++;
 
         }
     }
 
-    public static List<TeamValue> getTeamRank(String file) throws Exception {
-        List<TeamValue> teamMatchPoints = new ArrayList<>();
-        List<TeamValue> finalRank = new ArrayList<>();
+    /**
+     * This is the most important function.
+     * It serves as the parent for most of the other functions within this module.
+     * It is responsible for reading through the file contents line by line and
+     * processing the final ranks of teams in the league based on all the matches played.
+     *
+     * @param file
+     * @return
+     * @throws Exception
+     */
+    static List<TeamValue> getLeagueResults(String file) throws Exception {
+        List<TeamValue> matchPoints = new ArrayList<>();
+        List<TeamValue> leagueResults = new ArrayList<>();
 
+        // read file contents
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
-            Pattern p = Pattern.compile(TeamResultGroupingPattern);
+            Pattern p = Pattern.compile(TEAM_RESULT_GROUPING_PATTERN);
 
+            // go through each line of the file
             while ((line = br.readLine()) != null) {
 
                 List<TeamValue> scores = new ArrayList<>();
 
+                // Each line represents the outcome of a match.
+                // Each team's own outcome of the match is separated by a ", "
+                // which is why we first split the line by ", " to get a matchResults array
+                // of two strings representing the outcome of each team for the match.
                 String[] matchResults = line.split(", ");
 
+                // Now we loop through the matchResults
                 for (String result : matchResults) {
 
+                    // We parse the string into a TeamValue object for easy processing later.
                     TeamValue teamResult = getTeamResultFromString(result, p);
 
+                    // We add this result to an array representing the scores for each team of this match.
                     if (teamResult != null) {
                         scores.add(teamResult);
                     }
 
                 }
 
-                teamMatchPoints.addAll(calculateMatchPoints(scores));
+                // Now that we have an array of TeamValue objects for the match representing each team,
+                // we can calculate the match points.
+
+                // Here we also concatenate the new matchPoints array with all previous added matchPoints.
+                // The purpose of this is to have an array of TeamValue objects each representing
+                // the points the team gained in a match.
+
+                matchPoints.addAll(calculateMatchPoints(scores));
 
             }
         }
 
-        finalRank = reduceTeamMatchPoints(teamMatchPoints);
+        // Now we reduce this array of all our teams' matchPoints
+        // into an array containing a single entry for each team
+        // with the value representing the sum of all their match points gained.
+        leagueResults = reduceTeamMatchPoints(matchPoints);
 
-        sort(finalRank);
-        setTeamRanks(finalRank);
+        // Sorts leagueResults by value DESC, and if value is the same then by name ASC.
+        Comparator<TeamValue> comparator = Comparator.comparingInt(TeamValue::getValue).reversed().thenComparing(TeamValue::getName);
+        leagueResults.sort(comparator);
 
-        return finalRank;
+        // Set the team ranks on the sorted data.
+        setTeamRanks(leagueResults);
+
+        return leagueResults;
     }
 
-    public static TeamValue getTeamResultFromString(String result, Pattern pattern) {
+    /**
+     * Expects a string containing the name of the team followed by a space and then the team's score for that match.
+     * E.g. team "GoGetters" with score 10 should have a string as follows: "GoGetters 10"
+     * <p>
+     * It will then convert this string into a TeamValue object that has a name and value variable.
+     * It should also convert the string score into a number.
+     *
+     * @param result
+     * @param pattern
+     * @return
+     */
+    static TeamValue getTeamResultFromString(String result, Pattern pattern) {
 
         // Use regex pattern to match team names that include spaces
         Matcher m = pattern.matcher(result);
@@ -121,31 +189,42 @@ public class Utils {
 
             String team = m.group(1);
 
-            // Remove the last space from the team name
+            // Remove the space at the end of the team name
             String name = team.substring(0, team.length() - 1);
 
+            // Convert string value into a number.
             Integer value = Integer.valueOf(m.group(2));
 
+            // return a TeamValue class object
             return new TeamValue(name, value);
         }
 
         return null;
     }
 
-    public static void sort(List<TeamValue> finalTeamMatchPoints) {
-        // Sort team match points by points and then by team name (if points are the same)
-        Comparator<TeamValue> comparator = Comparator.comparingInt(TeamValue::getValue).reversed().thenComparing(TeamValue::getName);
+    /**
+     * When this function is called we have a list
+     * containing each team's match points for all games played.
+     * <p>
+     * We want to reduced that list to one that only has
+     * one entry for each team, with each new object having it's
+     * value represent the sum of all match points gained in the league.
+     *
+     * @param allTeamMatchPoints
+     * @return
+     */
+    private static List<TeamValue> reduceTeamMatchPoints(List<TeamValue> allTeamMatchPoints) {
 
-        Collections.sort(finalTeamMatchPoints, comparator);
-    }
-
-    public static List<TeamValue> reduceTeamMatchPoints(List<TeamValue> allTeamMatchPoints) {
+        // Using a map here makes it easier to reduce into a single entry per team.
         HashMap<String, Integer> finalTeamPoints = new HashMap<>();
 
         for (TeamValue matchPoints : allTeamMatchPoints) {
 
             String name = matchPoints.getName();
             Integer points = matchPoints.getValue();
+
+            // If the name does not exist in the map, it will be initialised with the value of points.
+            // Otherwise it will just add this match's points to the previous points value.
 
             if (!finalTeamPoints.containsKey(name)) {
                 finalTeamPoints.put(name, points);
@@ -156,10 +235,11 @@ public class Utils {
             }
         }
 
+        // Convert the map back into a list for better processing later.
         return Utils.convertTeamValueMapToList(finalTeamPoints);
     }
 
-    public static void delayedPrint(String text, Integer delay) {
+    static void delayedPrint(String text, Integer delay) {
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
@@ -179,9 +259,20 @@ public class Utils {
         }, 3000);
     }
 
-    public static List<TeamValue> calculateMatchPoints(List<TeamValue> matchResults) {
+    /**
+     * Processes a list of the two team scores in a single match
+     * and returns a new TeamValue object for each team where the value parameter
+     * represents the points the team received from either Losing/Winning/Drawing the match.
+     *
+     * @param matchResults
+     * @return
+     */
+    static List<TeamValue> calculateMatchPoints(List<TeamValue> matchResults) {
 
         List<TeamValue> matchPoints = new ArrayList<>();
+
+        // Initialise new TeamValue objects for each team
+        // setting initial points to 0
 
         TeamValue teamA = matchResults.get(0);
         TeamValue teamB = matchResults.get(1);
@@ -194,25 +285,25 @@ public class Utils {
         Integer teamBGoals = teamB.getValue();
         TeamValue teamBPoints = new TeamValue(teamBName, 0);
 
+        // Match is a DRAW
         if (teamAGoals.equals(teamBGoals)) {
 
             teamAPoints.setValue(1);
             teamBPoints.setValue(1);
 
+            // Team A WON
         } else if (teamAGoals > teamBGoals) {
             teamAPoints.setValue(3);
+
+            // Team B WON
         } else {
             teamBPoints.setValue(3);
         }
 
+        // Add the new objects to an empty list
         matchPoints.add(teamAPoints);
         matchPoints.add(teamBPoints);
 
         return matchPoints;
-    }
-
-    public static boolean fileExists(String filePath) {
-        File tempFile = new File(filePath);
-        return tempFile.exists();
     }
 }
