@@ -157,8 +157,8 @@ public class Utils {
             }
         }
 
-        // Now we reduce this array of all our teams' matchPoints
-        // into an array containing a single entry for each team
+        // Now we reduce this list of all our teams' matchPoints
+        // into a list containing a single entry for each team
         // with the value representing the sum of all their match points gained.
         leagueResults = reduceTeamMatchPoints(matchPoints);
 
