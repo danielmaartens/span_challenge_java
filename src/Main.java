@@ -1,3 +1,4 @@
+import java.io.File;
 import java.util.*;
 
 public class Main {
@@ -7,30 +8,26 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         Boolean running = true;
         String userInput;
+        Print print = new Print(1500);
 
-        System.out.println("\nWelcome to the League Points Calculator !\n");
+        print.ln("\nWelcome to the League Rank Calculator !\n");
 
-        Integer initialDelay = 1500;
-        Integer delay = initialDelay;
+        print.withDelay("This program will calculate the ranking table for a soccer league.\n");
 
-        Utils.delayedPrint("This program will calculate the ranking table for a soccer league.\n", delay);
-        delay += initialDelay;
-
-        Utils.delayedPrint("The data for the results of the games should be stored in a text file.", delay);
-        delay += initialDelay;
+        print.withDelay("The data for the results of the games should be stored in a text file.");
 
         while (running) {
 
-            Utils.delayedPrint("\nPlease provide the full path of the file where your results are stored:\n", delay);
-            Utils.delayedPrint("Full File Path: ", delay + 10);
+            print.withDelay("\nPlease provide the full path of the file where your results are stored:\n");
+            print.withDelay("Full File Path To Data: ", print.getCurrentDelay(10));
 
             String file = scanner.next();
 
-            if (Utils.fileExists(file)) {
+            if (new File(file).exists()) {
                 try {
-                    System.out.println("\nRESULTS\n");
+                    System.out.println("\nLEAGUE RANK RESULTS\n");
 
-                    List<TeamValue> finalTeamMatchPoints = Utils.getTeamRank(file);
+                    List<TeamValue> finalTeamMatchPoints = Utils.getLeagueResults(file);
 
                     for (TeamValue team : finalTeamMatchPoints) {
 
@@ -70,7 +67,7 @@ public class Main {
             }
         }
 
-        System.out.println("\nThank you for using the League Points Calculator !");
+        System.out.println("\nThank you for using the League Rank Calculator !");
         System.exit(0);
 
 
