@@ -138,18 +138,18 @@ public class Utils {
                     // We parse the string into a TeamValue object for easy processing later.
                     TeamValue teamResult = getTeamResultFromString(result, p);
 
-                    // We add this result to an array representing the scores for each team of this match.
+                    // We add this result to a list representing the scores for each team of this match.
                     if (teamResult != null) {
                         scores.add(teamResult);
                     }
 
                 }
 
-                // Now that we have an array of TeamValue objects for the match representing each team,
+                // Now that we have a list of TeamValue objects for the match representing each team,
                 // we can calculate the match points.
 
                 // Here we also concatenate the new matchPoints array with all previous added matchPoints.
-                // The purpose of this is to have an array of TeamValue objects each representing
+                // The purpose of this is to have a list of TeamValue objects each representing
                 // the points the team gained in a match.
 
                 matchPoints.addAll(calculateMatchPoints(scores));
