@@ -15,7 +15,7 @@ public class Tests {
 
     private final TeamValue teamValue = new TeamValue("GoGetters", 10);
 
-    private final Pattern teamResultGroupingPattern = Pattern.compile(Utils.TeamResultGroupingPattern);
+    private final Pattern teamResultGroupingPattern = Pattern.compile(Utils.TEAM_RESULT_GROUPING_PATTERN);
 
     private final String file = Paths.get("input.csv").toString();
 
@@ -121,7 +121,7 @@ public class Tests {
 
         @BeforeEach
         void initialiseFinalResult() throws Exception {
-            finalRank = Utils.getTeamRank(file);
+            finalRank = Utils.getLeagueResults(file);
         }
 
         @Test
