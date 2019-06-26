@@ -30,14 +30,20 @@ public class Main {
             print.withDelay("\nPlease provide the full path of the file where your results are stored:\n");
             print.withDelay("Full File Path To Data: ", delayBeforeLoop + 1);
 
+            // read in user input and store it in the file variable
             String file = scanner.next();
 
+            // Does file exist ?
             if (new File(file).exists()) {
                 try {
-                    System.out.println("\nLEAGUE RANK RESULTS\n");
 
+                    // It does so let's start processing
+                    // process the file contents and get the league results
                     List<TeamValue> finalTeamMatchPoints = Utils.getLeagueResults(file);
 
+                    System.out.println("\nLEAGUE RANK RESULTS\n");
+
+                    // Print out the ranks in a format specified in the challenge.
                     for (TeamValue team : finalTeamMatchPoints) {
 
                         Integer points = team.getValue();
