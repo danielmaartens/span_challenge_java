@@ -30,7 +30,7 @@ Lions 4, Grouches 0
 Before completing the following steps, please make sure you are in the root directory.
 
 ```
-sh run_with_tests.sh
+cd /path/to/span_challenge_java
 ```
 #### Programmatic Execution
 
@@ -52,4 +52,3 @@ sh test.sh
 ``` 
 sh run.sh
 ```
-
