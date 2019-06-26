@@ -34,7 +34,7 @@ sh run_with_tests.sh
 ```
 #### Programmatic Execution
 
-Scripts have been provided so that you do not have to focus on any initial setup, besides making sure you have `node 8`.
+Scripts have been provided so that you do not have to focus on any initial setup, besides making sure you have `g++` installed.
 
 ##### Options
 
