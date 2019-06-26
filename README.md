@@ -36,6 +36,8 @@ sh run_with_tests.sh
 
 Scripts have been provided so that you do not have to focus on any initial setup, besides making sure you have `g++` installed.
 
+All you have to do is run any one of the following:
+
 ##### Options
 
 1 - test and run
