@@ -13,7 +13,7 @@ public class Utils {
     public static final String TEAM_RESULT_GROUPING_PATTERN = "^([a-zA-Z\\s]+)([0-9]+$)";
 
     /**
-     * Converts a list of TeamValues to a map with the team name as key with the corresponding value in TeamValueobject.
+     * Converts a list of TeamValues to a map with the team name as key with the corresponding value in TeamValue object.
      * This is so that the tests who know the team name can easily access the value property.
      *
      * @param teamValues
@@ -135,7 +135,7 @@ public class Utils {
                 // Now we loop through the matchResults
                 for (String result : matchResults) {
 
-                    // We parse the string into a TeamValueobject for easy processing later.
+                    // We parse the string into a TeamValue object for easy processing later.
                     TeamValue teamResult = getTeamResultFromString(result, p);
 
                     // We add this result to an array representing the scores for each team of this match.
@@ -145,11 +145,11 @@ public class Utils {
 
                 }
 
-                // Now that we have an array of TeamValueobjects for the match representing each team,
+                // Now that we have an array of TeamValue objects for the match representing each team,
                 // we can calculate the match points.
 
                 // Here we also concatenate the new matchPoints array with all previous added matchPoints.
-                // The purpose of this is to have an array of TeamValueobjects each representing
+                // The purpose of this is to have an array of TeamValue objects each representing
                 // the points the team gained in a match.
 
                 matchPoints.addAll(calculateMatchPoints(scores));
@@ -176,7 +176,7 @@ public class Utils {
      * Expects a string containing the name of the team followed by a space and then the team's score for that match.
      * E.g. team "GoGetters" with score 10 should have a string as follows: "GoGetters 10"
      * <p>
-     * It will then convert this string into a TeamValueobject that has a name and value variable.
+     * It will then convert this string into a TeamValue object that has a name and value variable.
      * It should also convert the string score into a number.
      *
      * @param result
@@ -198,7 +198,7 @@ public class Utils {
             // Convert string value into a number.
             Integer value = Integer.valueOf(m.group(2));
 
-            // return a TeamValueclass object
+            // return a TeamValue class object
             return new TeamValue(name, value);
         }
 
@@ -264,7 +264,7 @@ public class Utils {
 
     /**
      * Processes a list of the two team scores in a single match
-     * and returns a new TeamValueobject for each team where the value parameter
+     * and returns a new TeamValue object for each team where the value parameter
      * represents the points the team received from either Losing/Winning/Drawing the match.
      *
      * @param matchResults
@@ -274,7 +274,7 @@ public class Utils {
 
         List<TeamValue> matchPoints = new ArrayList<>();
 
-        // Initialise new TeamValueobjects for each team
+        // Initialise new TeamValue objects for each team
         // setting initial points to 0
 
         TeamValue teamA = matchResults.get(0);
