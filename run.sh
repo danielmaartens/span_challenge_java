@@ -1,7 +1,10 @@
 #!/usr/local/bin/bash
 
-javac -d dist -cp junit5:src:junit-platform-console.jar src/Tests.java
+rm -rf build  >/dev/null
+mkdir build
 
-cd dist
+javac -d build -cp src src/main/Main.java
 
-java Main
+cd build
+
+java main.Main

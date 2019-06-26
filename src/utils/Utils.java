@@ -1,5 +1,8 @@
+package utils;
+
+import main.TeamValue;
+
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -7,16 +10,16 @@ import java.util.regex.Pattern;
 
 public class Utils {
 
-    static final String TEAM_RESULT_GROUPING_PATTERN = "^([a-zA-Z\\s]+)([0-9]+$)";
+    public static final String TEAM_RESULT_GROUPING_PATTERN = "^([a-zA-Z\\s]+)([0-9]+$)";
 
     /**
-     * Converts an array of TeamValues to a map with the team name as key with the corresponding value in TeamValue object.
+     * Converts an array of TeamValues to a map with the team name as key with the corresponding value in main.TeamValue object.
      * This is so that the tests who know the team name can easily access the value property.
      *
      * @param teamValues
      * @return
      */
-    static HashMap<String, Integer> convertTeamValueListToMap(List<TeamValue> teamValues) {
+    public static HashMap<String, Integer> convertTeamValueListToMap(List<TeamValue> teamValues) {
         HashMap<String, Integer> map = new HashMap<String, Integer>();
 
         for (TeamValue team : teamValues) map.put(team.getName(), team.getValue());
@@ -50,7 +53,7 @@ public class Utils {
      * @param s
      * @return
      */
-    static Boolean booleanFromString(String s) {
+    public static Boolean booleanFromString(String s) {
         String lowerCaseS = s.toLowerCase();
 
         switch (lowerCaseS) {
@@ -109,7 +112,7 @@ public class Utils {
      * @return
      * @throws Exception
      */
-    static List<TeamValue> getLeagueResults(String file) throws Exception {
+    public static List<TeamValue> getLeagueResults(String file) throws Exception {
         List<TeamValue> matchPoints = new ArrayList<>();
         List<TeamValue> leagueResults = new ArrayList<>();
 
@@ -132,7 +135,7 @@ public class Utils {
                 // Now we loop through the matchResults
                 for (String result : matchResults) {
 
-                    // We parse the string into a TeamValue object for easy processing later.
+                    // We parse the string into a main.TeamValue object for easy processing later.
                     TeamValue teamResult = getTeamResultFromString(result, p);
 
                     // We add this result to an array representing the scores for each team of this match.
@@ -142,11 +145,11 @@ public class Utils {
 
                 }
 
-                // Now that we have an array of TeamValue objects for the match representing each team,
+                // Now that we have an array of main.TeamValue objects for the match representing each team,
                 // we can calculate the match points.
 
                 // Here we also concatenate the new matchPoints array with all previous added matchPoints.
-                // The purpose of this is to have an array of TeamValue objects each representing
+                // The purpose of this is to have an array of main.TeamValue objects each representing
                 // the points the team gained in a match.
 
                 matchPoints.addAll(calculateMatchPoints(scores));
@@ -173,14 +176,14 @@ public class Utils {
      * Expects a string containing the name of the team followed by a space and then the team's score for that match.
      * E.g. team "GoGetters" with score 10 should have a string as follows: "GoGetters 10"
      * <p>
-     * It will then convert this string into a TeamValue object that has a name and value variable.
+     * It will then convert this string into a main.TeamValue object that has a name and value variable.
      * It should also convert the string score into a number.
      *
      * @param result
      * @param pattern
      * @return
      */
-    static TeamValue getTeamResultFromString(String result, Pattern pattern) {
+    public static TeamValue getTeamResultFromString(String result, Pattern pattern) {
 
         // Use regex pattern to match team names that include spaces
         Matcher m = pattern.matcher(result);
@@ -195,7 +198,7 @@ public class Utils {
             // Convert string value into a number.
             Integer value = Integer.valueOf(m.group(2));
 
-            // return a TeamValue class object
+            // return a main.TeamValue class object
             return new TeamValue(name, value);
         }
 
@@ -261,17 +264,17 @@ public class Utils {
 
     /**
      * Processes a list of the two team scores in a single match
-     * and returns a new TeamValue object for each team where the value parameter
+     * and returns a new main.TeamValue object for each team where the value parameter
      * represents the points the team received from either Losing/Winning/Drawing the match.
      *
      * @param matchResults
      * @return
      */
-    static List<TeamValue> calculateMatchPoints(List<TeamValue> matchResults) {
+    public static List<TeamValue> calculateMatchPoints(List<TeamValue> matchResults) {
 
         List<TeamValue> matchPoints = new ArrayList<>();
 
-        // Initialise new TeamValue objects for each team
+        // Initialise new main.TeamValue objects for each team
         // setting initial points to 0
 
         TeamValue teamA = matchResults.get(0);

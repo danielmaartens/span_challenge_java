@@ -1,9 +1,5 @@
 #!/usr/local/bin/bash
 
-javac -d dist -cp junit5:src:junit-platform-console.jar src/Tests.java
+sh test.sh
 
-java -jar junit-platform-console.jar --class-path dist --scan-class-path
-
-cd dist
-
-java Main
+sh run.sh

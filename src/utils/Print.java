@@ -1,8 +1,10 @@
+package utils;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * This Print class serves as a DRY way
+ * This utils.Print class serves as a DRY way
  * of delaying output to the console.
  *
  * In the beginning we want to simulate the console talking to you
@@ -26,12 +28,12 @@ public class Print {
     private int initialDelay;
     private int runningDelay;
 
-    Print(int initialDelay) {
+    public Print(int initialDelay) {
         this.initialDelay = initialDelay;
         this.runningDelay = initialDelay;
     }
 
-    void withDelay(String text) {
+    public void withDelay(String text) {
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
@@ -43,7 +45,7 @@ public class Print {
         this.runningDelay += this.initialDelay;
     }
 
-    void withDelay(String text, int delay) {
+    public void withDelay(String text, int delay) {
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override

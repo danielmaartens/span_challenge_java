@@ -1,9 +1,13 @@
+package test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
+import main.TeamValue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import utils.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,16 +27,19 @@ public class Tests {
     private List<TeamValue> finalRank;
 
     @Test
-    @DisplayName("Check Team Value Class")
-    void teamValue() {
-        assertAll("TeamValue",
-                () -> assertEquals("GoGetters", teamValue.getName()),
-                () -> assertEquals(10, teamValue.getValue())
-        );
+    @DisplayName("Check main.TeamValue.getName() returns correct value")
+    void test_getName() {
+        assertEquals("GoGetters", teamValue.getName());
     }
 
     @Test
-    @DisplayName("Check Team Result From String")
+    @DisplayName("Check main.TeamValue.getValue() returns correct value and of type int")
+    void test_getValue() {
+        assertEquals(10, teamValue.getValue());
+    }
+
+    @Test
+    @DisplayName("getTeamResultFromString function should correctly parse the input string into a team name (handling space in between) and a value of type int.")
     void teamResultFromString() {
         TeamValue teamResult = Utils.getTeamResultFromString("FC Awesome 1", teamResultGroupingPattern);
         assertAll("Team Result",
@@ -46,74 +53,6 @@ public class Tests {
                 () -> assertEquals(1, teamResult.getValue())
         );
     }
-
-    @Nested
-    @DisplayName("Calculate Win Lose Match Points")
-    class WinLose {
-
-        @BeforeEach
-        void initialiseTeamPointsMap() {
-            TeamValue teamAResult = new TeamValue("A", 1);
-            TeamValue teamBResult = new TeamValue("B", 0);
-            List<TeamValue> matchResults = new ArrayList<>();
-            matchResults.add(teamAResult);
-            matchResults.add(teamBResult);
-
-            List<TeamValue> matchPoints = Utils.calculateMatchPoints(matchResults);
-            matchPointsMap = Utils.convertTeamValueListToMap(matchPoints);
-        }
-
-        @Test
-        @DisplayName("Team A (WIN) Match Points")
-        void matchPointsForTeamA() {
-
-            assertEquals(3, matchPointsMap.get("A"));
-
-        }
-
-        @Test
-        @DisplayName("Team B (LOSE) Match Points")
-        void matchPointsForTeamB() {
-
-            assertEquals(0, matchPointsMap.get("B"));
-
-        }
-    }
-
-
-    @Nested
-    @DisplayName("Calculate Draw Match Points")
-    class Draw {
-
-        @BeforeEach
-        void initialiseTeamPointsMap() {
-            TeamValue teamAResult = new TeamValue("A", 1);
-            TeamValue teamBResult = new TeamValue("B", 1);
-            List<TeamValue> matchResults = new ArrayList<>();
-            matchResults.add(teamAResult);
-            matchResults.add(teamBResult);
-
-            List<TeamValue> matchPoints = Utils.calculateMatchPoints(matchResults);
-            matchPointsMap = Utils.convertTeamValueListToMap(matchPoints);
-        }
-
-        @Test
-        @DisplayName("Team A (DRAW) Match Points")
-        void matchPointsForTeamA() {
-
-            assertEquals(1, matchPointsMap.get("A"));
-
-        }
-
-        @Test
-        @DisplayName("Team B (DRAW) Match Points")
-        void matchPointsForTeamB() {
-
-            assertEquals(1, matchPointsMap.get("B"));
-
-        }
-    }
-
 
     @Nested
     @DisplayName("Correct Team Order and Match Points")
@@ -180,4 +119,72 @@ public class Tests {
         }
     }
 
+    @Nested
+    @DisplayName("Calculate Win Lose Match Points")
+    class WinLose {
+
+        @BeforeEach
+        void initialiseTeamPointsMap() {
+            TeamValue teamAResult = new TeamValue("A", 1);
+            TeamValue teamBResult = new TeamValue("B", 0);
+            List<TeamValue> matchResults = new ArrayList<>();
+            matchResults.add(teamAResult);
+            matchResults.add(teamBResult);
+
+            List<TeamValue> matchPoints = Utils.calculateMatchPoints(matchResults);
+            matchPointsMap = Utils.convertTeamValueListToMap(matchPoints);
+        }
+
+        @Test
+        @DisplayName("Team A WON so they should have 3 match points.")
+        void matchPointsForTeamA() {
+
+            assertEquals(3, matchPointsMap.get("A"));
+
+        }
+
+        @Test
+        @DisplayName("Team B LOST so they should have 0 match points")
+        void matchPointsForTeamB() {
+
+            assertEquals(0, matchPointsMap.get("B"));
+
+        }
+    }
+
+
+    @Nested
+    @DisplayName("Calculate Draw Match Points")
+    class Draw {
+
+        @BeforeEach
+        void initialiseTeamPointsMap() {
+            TeamValue teamAResult = new TeamValue("A", 1);
+            TeamValue teamBResult = new TeamValue("B", 1);
+            List<TeamValue> matchResults = new ArrayList<>();
+            matchResults.add(teamAResult);
+            matchResults.add(teamBResult);
+
+            List<TeamValue> matchPoints = Utils.calculateMatchPoints(matchResults);
+            matchPointsMap = Utils.convertTeamValueListToMap(matchPoints);
+        }
+
+        @Test
+        @DisplayName("Team A should have 1 match point.")
+        void matchPointsForTeamA() {
+
+            assertEquals(1, matchPointsMap.get("A"));
+
+        }
+
+        @Test
+        @DisplayName("Team B should have 1 match point.")
+        void matchPointsForTeamB() {
+
+            assertEquals(1, matchPointsMap.get("B"));
+
+        }
+    }
 }
+
+
