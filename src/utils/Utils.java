@@ -148,7 +148,7 @@ public class Utils {
                 // Now that we have a list of TeamValue objects for the match representing each team,
                 // we can calculate the match points.
 
-                // Here we also concatenate the new matchPoints array with all previous added matchPoints.
+                // Here we also concatenate the new matchPoints list with all previous added matchPoints.
                 // The purpose of this is to have a list of TeamValue objects each representing
                 // the points the team gained in a match.
 
