@@ -10,8 +10,7 @@ soccer league.
 - Java 11
 
 ### NOTE:
-- Results of your soccer league must be in a file with the following structure.
-- Please make sure the file ends with the last line of match outcomes, i.e. do not leave any empty lines in the file.
+- Results of your soccer league must be in a file with the following structure:
 
 ```
 Lions 3, Snakes 3
@@ -21,7 +20,8 @@ Tarantulas 3, Snakes 1
 Lions 4, Grouches 0
 ```
 
-- You need to know the absolute file path to copy and paste it into the terminal
+- Please make sure the file ends with the last line of match outcomes, i.e. do not leave any empty lines in the file.
+- You need to know the absolute file path to copy and paste it into the terminal.
 
 #### NB:
 - This program CANNOT handle tildes (`~`) at the start of the file path. 
